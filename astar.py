@@ -42,9 +42,7 @@ class Graph:
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
     def __init__(self, start_point, end_point):
-        #self.start_point = start_point
         self.set_start_point(start_point)
-        #self.end_point = end_point
         self.set_end_point(end_point)
         self.update_graphs_data()
 
