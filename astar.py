@@ -1,4 +1,26 @@
 import curses
+class OpenSet:
+    open_set = []
+
+    def append(self, value):
+        self.open_set.append(value)
+
+    def get_lowest_f(self):
+        min = self[0]
+        for point in self:
+            if point.f < min.f:
+                min = point
+
+    def __getitem__(self, index):
+        return self[index]
+
+    def __len__(self):
+        return len(self.open_set)
+
+    def remove(self, point_to_remove):
+        self.open_set.remove(point_to_remove)
+
+
 
 class Point:
     x = None
@@ -8,6 +30,9 @@ class Point:
     came_from = None;
     estimate_path_length = None;
     estimate_full_path_length = None;
+    g = None # cost form start
+    h = None # heuristic cost to goal
+    f = None
 
     def __init__(self, position, value):
         self.x = position[0]
@@ -19,6 +44,9 @@ class Point:
 
     def get_estimate_full_path_length(self):
         return self.path_length_from_start + self.estimate_path_length
+
+    def __eq__(self, other_point):
+        return self.x == other_point.x and self.y == other_point.y
 
 class Graph:
     start_point = None
@@ -87,6 +115,12 @@ class Graph:
                     curses_window.refresh()
                 item_number = item_number+1
             line_number = line_number+1
+    def get_heuristic_path_length(self, from_point, to_point):
+        return int(from_point.x - to_point.x) + int(from_point.y - to_point.y)
+    def __eq__(self, other):
+        first = self.x == other.x
+        last = self.y == other.y
+        return first == last
 
 
 #--------------program starts here---------------------
@@ -95,18 +129,34 @@ curses.noecho()
 curses.cbreak()
 
 start_point = Point([8,1], 'S')
-
-start_point.path_length_from_start = 0
-start_point.came_from = 0
-
 end_point = Point([4,34], 'E')
 
 graph = Graph(start_point, end_point)
 graph.display(stdscr)
+
 closed_set = []
-open_set = []
+open_set = OpenSet()
 
 open_set.append(graph.start_point);
+print type(graph.start_point)
+exit()
+graph.start_point.g = 0 # there is zero hops from start point to start point ;)
+graph.start_point.h = graph.get_heuristic_path_length(start_point, end_point); # gets heuristic path to goal
+graph.start_point.f = start_point.g + start_point.h  
+
 while len(open_set) > 0:
-    pass
+    low_f_point = open_set.get_lowest_f()
+    if low_f_point == end_point:
+        print "FOUND!!!!" # need to replace it with real function
+        exit()
+
+    open_set.remove(low_f_point)
+    closed_set.append(low_f_point)
+
+    for point in low_f_point.get_neighbors(): # CONTINUE HERE
+        pass
+
+
+    
+
 
